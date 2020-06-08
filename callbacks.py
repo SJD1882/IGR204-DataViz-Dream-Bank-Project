@@ -71,8 +71,6 @@ def get_app_callbacks(app, embedding_df):
         else:
             dream_idx = 0
 
-        print(clicked_dream)
-
         dream = embedding_df['content'].iloc[dream_idx]
         date = embedding_df['date'].iloc[dream_idx]
         author = embedding_df['description'].iloc[dream_idx]
