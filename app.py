@@ -36,7 +36,8 @@ layout = dbc.Container([
     html.Br(), html.Br(),
 
     # Dreamer Choice
-    html.H5('Dreamer'),
+    html.H3('Dreamer'),
+    dcc.Markdown('**Select a dreamer for display:**'),
     dbc.Row(
         dbc.Col(dreamer_dropdown, width=4)
     ),
