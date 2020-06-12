@@ -10,8 +10,12 @@ Our goal is to help  identify groups of people having similar dreams, and allows
 
 **Required dependencies**:
 
-- Standard Python packages
-- Dash packages (dash_core_components, dash_html_components, dash_bootstrap_components, plotly)
+In addition to the standard Python packages, the following dependencies are required:
+
+```console
+pip install dash
+pip install dash-bootstrap-components
+```
 
 **To run our application:**
 
