@@ -13,49 +13,73 @@ def get_app_callbacks(app, embedding_df):
     """
     @app.callback(
         Output('embedding-container', 'figure'),
-        [Input('dreamer-select', 'value')]
+        [Input('dreamer-select', 'value'),
+         Input('dreamer-compare', 'value')]
     )
-    def create_umap_graph(dreamer):
+    def create_umap_graph(dreamer, compare):
         """ AAA
         """
         embedding = embedding_df.copy()
 
-        if dreamer == 'All':
+        if (dreamer == 'All'):
             embbedings = [embedding]
-            fig = get_embedding_scatterplots(embbedings, [2], [1.0], ['grey'])
+            fig = get_embedding_scatterplots(embbedings, [2], [1.0], ['darkblue'], names=['All'])
 
-        else:
+        elif (dreamer != 'All') and (compare == 'None'):
             # Prepare data
-            embedding_selected = embedding_df[embedding_df['dreamer'] == dreamer]
-            embedding_others = embedding_df[embedding_df['dreamer'] != dreamer]
+            embedding_selected = embedding_df[embedding_df['dreamer'] == dreamer].copy()
+            embedding_others = embedding_df[embedding_df['dreamer'] != dreamer].copy()
             embbedings = [embedding_others, embedding_selected]
 
             # Scatter plot
             fig = get_embedding_scatterplots(embbedings, sizes=[2, 5], opacity_states=[0.35, 1.0],
-                                             colors=['grey', 'red'])
+                                             colors=['grey', 'darkblue'], names=['All', dreamer])
+
+        elif (dreamer != 'All') and (compare != 'None'):
+            # Prepare data
+            embedding_selected = embedding_df[embedding_df['dreamer'] == dreamer].copy()
+            embedding_compare = embedding_df[embedding_df['dreamer'] == compare].copy()
+            embedding_others = embedding_df[~embedding_df['dreamer'].isin([dreamer, compare])].copy()
+            embbedings = [embedding_others, embedding_selected, embedding_compare]
+
+            # Scatter plot
+            fig = get_embedding_scatterplots(embbedings, sizes=[2, 5, 5], opacity_states=[0.35, 1.0, 1.0],
+                                             colors=['grey', 'darkblue', 'red'], names=['All', dreamer, compare])
 
         return fig
 
 
     @app.callback(
         Output('tfidf-container', 'figure'),
-        [Input('dreamer-select', 'value')]
+        [Input('dreamer-select', 'value'),
+         Input('dreamer-compare', 'value')]
     )
-    def create_tfidf_score(dreamer):
+    def create_tfidf_score(dreamer, compare):
         """ AAA
         """
         embedding = embedding_df.copy()
 
-        if dreamer == 'All':
+        if (dreamer == 'All'):
             # Unigrams and Bigrams
-            clean_corpus = embedding_df['text_cleaned'].values
-            fig = get_tfidf_figure(clean_corpus)
+            clean_corpus = embedding['text_cleaned'].values
+            fig = get_tfidf_figure([clean_corpus], colors=['darkblue'], names=['All'])
 
-        else:
+        elif (dreamer != 'All') and (compare == 'None'):
             # Prepare data
-            embedding_selected = embedding_df[embedding_df['dreamer'] == dreamer]
+            embedding_selected = embedding[embedding['dreamer'] == dreamer]
             clean_corpus = embedding_selected['text_cleaned'].values
-            fig = get_tfidf_figure(clean_corpus)
+            fig = get_tfidf_figure([clean_corpus], colors=['darkblue'], names=[dreamer])
+
+        elif (dreamer != 'All') and (compare != 'None'):
+            # Prepare data
+            embedding_selected = embedding[embedding['dreamer'] == dreamer]
+            embedding_compare = embedding[embedding['dreamer'] == compare]
+
+            clean_corpus_selected = embedding_selected['text_cleaned'].values
+            clean_corpus_compare = embedding_compare['text_cleaned'].values
+
+            fig = get_tfidf_figure([clean_corpus_selected, clean_corpus_compare],
+                                   colors=['darkblue', 'red'], names=[dreamer, compare])
 
         return fig
 
@@ -81,19 +105,34 @@ def get_app_callbacks(app, embedding_df):
 
     @app.callback(
         Output('emotion-container', 'figure'),
-        [Input('dreamer-select', 'value')]
+        [Input('dreamer-select', 'value'),
+         Input('dreamer-compare', 'value')]
     )
-    def create_tfidf_score(dreamer):
+    def get_emotion_scores(dreamer, compare):
         """ AAA
         """
+        emotions = ['anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 'surprise', 'trust']
         embedding = embedding_df.copy()
 
-        if dreamer == 'All':
-            fig = get_emoticon_radar_chart()
+        if (dreamer == 'All'):
+            mean_scores = [embedding[emotions].mean()]
+            fig = get_emoticon_radar_chart(mean_scores, ['darkblue'], ['All'])
 
-        else:
-            embedding_selected = embedding_df[embedding_df['dreamer'] == dreamer]
-            fig = get_emoticon_radar_chart()
+        elif (dreamer != 'All') and (compare == 'None'):
+            embedding_1 = embedding_df[embedding_df['dreamer'] == dreamer].copy()
+            mean_scores_1 = embedding_1[emotions].mean()
+            scores = [mean_scores_1]
+            fig = get_emoticon_radar_chart(scores, ['darkblue', 'red'], [dreamer, compare])
+
+        elif (dreamer != 'All') and (compare != 'None'):
+            embedding_1 = embedding_df[embedding_df['dreamer'] == dreamer].copy()
+            embedding_2 = embedding_df[embedding_df['dreamer'] == compare].copy()
+            mean_scores_1 = embedding_1[emotions].mean()
+            mean_scores_2 = embedding_2[emotions].mean()
+            scores = [mean_scores_1, mean_scores_2]
+            fig = get_emoticon_radar_chart(scores, ['darkblue', 'red'], [dreamer, compare])
 
         return fig
+
+
 

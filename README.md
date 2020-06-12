@@ -1,6 +1,6 @@
 ## IGR204 Data Visualization Project - Decrypting Dreambank
 
-![](assets/dreambank_viewer.PNG)
+![](assets/dreambank_viewer_1.PNG)
 
 ### Motivation
 

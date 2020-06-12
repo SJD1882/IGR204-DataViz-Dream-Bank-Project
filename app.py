@@ -12,52 +12,78 @@ from callbacks import *
 #####################################################################################
 # Data
 #####################################################################################
-embedding_df = pd.read_csv('data/dreams_umap_df.csv')
+embedding_df = pd.read_csv('data/dreams_syuzhet_df.csv')
 embedding_df = embedding_df.dropna(subset=['content'])
 embedding_df = embedding_df.reset_index(drop=True)
 embedding_df['text'] = embedding_df['content'].astype(str)
 embedding_df['text'] = embedding_df['text'].apply(lambda x: x[:40] + '-<br>' + x[40:80] + '-<br>' + \
                                                             x[80:120] + '...')
 embedding_df['text'] = '<b>' + embedding_df['dreamer'] + '</b><br>' + embedding_df['text']
-dreamers = embedding_df['dreamer'].unique().tolist()
-dreamers = ['All'] + dreamers
-dreamers_items = [{'label': el, 'value': el} for el in dreamers]
-dreamer_dropdown = dcc.Dropdown(id='dreamer-select', options=dreamers_items,
-                                value='All')
+
+# Prepare Dropdown Levels (Main)
+dreamers_list = embedding_df[['dreamer', 'description']].drop_duplicates()
+dreamers_unique = ['All'] + dreamers_list['dreamer'].tolist()
+dreamers_desc_unique = ['All Dreamers'] + dreamers_list['description'].tolist()
+dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
+dreamer_dropdown = dcc.Dropdown(id='dreamer-select', options=dreamers_items, value='All')
+
+# Prepare Dropdown Levels (AAA)
+dreamers_unique = ['None'] + dreamers_list['dreamer'].tolist()
+dreamers_desc_unique = ['None'] + dreamers_list['description'].tolist()
+dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
+dreamer_dropdown_comparison = dcc.Dropdown(id='dreamer-compare', options=dreamers_items, value='None')
+
 
 
 #####################################################################################
 # Layout
 #####################################################################################
 layout = dbc.Container([
+
+
     # Main Header
     html.Br(),
     html.H1('Decrypting DreamBank'),
     html.Br(), html.Br(),
 
+
     # Dreamer Choice
-    html.H3('Dreamer'),
-    dcc.Markdown('**Select a dreamer for display:**'),
-    dbc.Row(
-        dbc.Col(dreamer_dropdown, width=4)
-    ),
+    dbc.Row([
+        dbc.Col(children=html.H3('Dreamer'), width=6),
+        dbc.Col(children=html.H3(''), width=6)
+    ]),
+    dbc.Row([
+        dbc.Col(dcc.Markdown('**Select a dreamer for display:**'), width=4),
+        dbc.Col(dcc.Markdown('**Select a dreamer for comparison:**'), width=4)
+    ], justify='between'),
+    dbc.Row([
+        dbc.Col(dreamer_dropdown, width=4),
+        dbc.Col(dreamer_dropdown_comparison, width=4),
+    ], justify='between'),
     html.Br(), html.Br(),
 
-    # Upper Figures
-    dbc.Row([
-        dbc.Col(children=html.H3('Dream Embedding Visualization'), width=6),
-        dbc.Col(children=html.H3('Dream Viewer'), width=6)
-    ]),
 
-    dbc.Row([
-        dbc.Col(children=dcc.Graph(id='embedding-container'), width=6),
-        dbc.Col(children=[
-            dcc.Markdown(id='text-container-1', style={"white-space": "pre"}),
-            dcc.Markdown(id='text-container-2', style={"overflow-y": "scroll", 'max-height': '300px'})
-        ], width=6)
-    ]),
+    # Upper Figures
+    dbc.Card([
+        dbc.Row([
+            dbc.Col(children=html.H3('Embedding Visualization'), width=6),
+            dbc.Col(children=html.H3(''), width=6)
+        ]),
+
+        dbc.Row([
+            dbc.Col(children=dcc.Graph(id='embedding-container'), width=6),
+            dbc.Col(children=[
+                dcc.Markdown(id='text-container-1', style={"white-space": "pre"}),
+                dcc.Markdown(id='text-container-2', style={"overflow-y": "scroll", 'max-height': '300px'})
+            ], width=6)
+        ])
+    ], body=True, style={"border": "1px grey solid"}, color="dark", inverse=True),
+
+    html.Br(), html.Br(),
+
 
     # Lower Figures
+
     dbc.Row([
         dbc.Col(children=html.H3('Word Frequency'), width=6),
         dbc.Col(children=html.H3('Emotive Lexicon Analysis'), width=6)
@@ -70,7 +96,8 @@ layout = dbc.Container([
 
 ])
 
-external_style_sheets = [dbc.themes.SIMPLEX]
+
+external_style_sheets = [dbc.themes.CERULEAN]
 app = dash.Dash(__name__, external_stylesheets=external_style_sheets)
 app.config.suppress_callback_exceptions = True
 app.layout = layout
