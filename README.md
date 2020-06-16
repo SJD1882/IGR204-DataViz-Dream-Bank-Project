@@ -32,4 +32,8 @@ A localhost will appear where the application can be displayed.
 
 We used baseline NLP approaches relying on word count and TF-IDF to preprocess Dream Bank. Data preprocessing steps are detailed in the following Jupyter Notebook:
 
-[Dream Bank Data Preprocessing](https://nbviewer.jupyter.org/github/SJD1882/IGR204-DataViz-Dream-Bank-Project/blob/master/notebooks/Dream_Bank_Data_Preprocessing.ipynb)
+[Dream Bank Data Preprocessing](https://github.com/SJD1882/IGR204-DataViz-Dream-Bank-Project/blob/master/notebooks/Dream_Bank_Data_Preprocessing.ipynb)
+
+Dimensionality Reduction was done with the UMAP algorithm:
+
+[Dream Bank UMAP Dimensionality Reduction](https://github.com/SJD1882/IGR204-DataViz-Dream-Bank-Project/blob/master/notebooks/Dream_Bank_Dimensionality_Reduction.ipynb)
