@@ -3,6 +3,7 @@
 #####################################################################################
 from dash.dependencies import Input, Output
 from figures import *
+from layouts import *
 
 
 #####################################################################################
@@ -135,4 +136,16 @@ def get_app_callbacks(app, embedding_df):
         return fig
 
 
+    @app.callback(
+        Output('displayed_tab', 'children'),
+        [Input('container_tabs', 'active_tab')]
+    )
+    def change_tab(tab_name):
+        """ AAA
+        """
+        if tab_name == 'tab-0':
+            return embedding_view
+        elif tab_name == 'tab-1':
+            return 'TBC'
+        return 'Loading...'
 

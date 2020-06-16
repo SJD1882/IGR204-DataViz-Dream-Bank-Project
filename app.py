@@ -7,32 +7,7 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
 from callbacks import *
-
-
-#####################################################################################
-# Data
-#####################################################################################
-embedding_df = pd.read_csv('data/dreams_syuzhet_df.csv')
-embedding_df = embedding_df.dropna(subset=['content'])
-embedding_df = embedding_df.reset_index(drop=True)
-embedding_df['text'] = embedding_df['content'].astype(str)
-embedding_df['text'] = embedding_df['text'].apply(lambda x: x[:40] + '-<br>' + x[40:80] + '-<br>' + \
-                                                            x[80:120] + '...')
-embedding_df['text'] = '<b>' + embedding_df['dreamer'] + '</b><br>' + embedding_df['text']
-
-# Prepare Dropdown Levels (Main)
-dreamers_list = embedding_df[['dreamer', 'description']].drop_duplicates()
-dreamers_unique = ['All'] + dreamers_list['dreamer'].tolist()
-dreamers_desc_unique = ['All Dreamers'] + dreamers_list['description'].tolist()
-dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
-dreamer_dropdown = dcc.Dropdown(id='dreamer-select', options=dreamers_items, value='All')
-
-# Prepare Dropdown Levels (AAA)
-dreamers_unique = ['None'] + dreamers_list['dreamer'].tolist()
-dreamers_desc_unique = ['None'] + dreamers_list['description'].tolist()
-dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
-dreamer_dropdown_comparison = dcc.Dropdown(id='dreamer-compare', options=dreamers_items, value='None')
-
+from layouts import *
 
 
 #####################################################################################
@@ -46,53 +21,17 @@ layout = dbc.Container([
     html.H1('Decrypting DreamBank'),
     html.Br(), html.Br(),
 
-
-    # Dreamer Choice
-    dbc.Row([
-        dbc.Col(children=html.H3('Dreamer'), width=6),
-        dbc.Col(children=html.H3(''), width=6)
+    # Tabs
+    dbc.CardHeader([
+        dbc.Tabs([
+            dbc.Tab(label='Dream View', id='tab-0'),
+            dbc.Tab(label='Time Series View', id='tab-1')
+        ], id='container_tabs', active_tab='tab-0')
     ]),
-    dbc.Row([
-        dbc.Col(dcc.Markdown('**Select a dreamer for display:**'), width=4),
-        dbc.Col(dcc.Markdown('**Select a dreamer for comparison:**'), width=4)
-    ], justify='between'),
-    dbc.Row([
-        dbc.Col(dreamer_dropdown, width=4),
-        dbc.Col(dreamer_dropdown_comparison, width=4),
-    ], justify='between'),
+
+    # Displayed Content
     html.Br(), html.Br(),
-
-
-    # Upper Figures
-    dbc.Card([
-        dbc.Row([
-            dbc.Col(children=html.H3('Embedding Visualization'), width=6),
-            dbc.Col(children=html.H3(''), width=6)
-        ]),
-
-        dbc.Row([
-            dbc.Col(children=dcc.Graph(id='embedding-container'), width=6),
-            dbc.Col(children=[
-                dcc.Markdown(id='text-container-1', style={"white-space": "pre"}),
-                dcc.Markdown(id='text-container-2', style={"overflow-y": "scroll", 'max-height': '300px'})
-            ], width=6)
-        ])
-    ], body=True, style={"border": "1px grey solid"}, color="dark", inverse=True),
-
-    html.Br(), html.Br(),
-
-
-    # Lower Figures
-
-    dbc.Row([
-        dbc.Col(children=html.H3('Word Frequency'), width=6),
-        dbc.Col(children=html.H3('Emotive Lexicon Analysis'), width=6)
-    ]),
-
-    dbc.Row([
-        dbc.Col(children=dcc.Graph(id='tfidf-container'), width=6),
-        dbc.Col(children=dcc.Graph(id='emotion-container'), width=6)
-    ]),
+    html.Div(id='displayed_tab')
 
 ])
 
