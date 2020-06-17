@@ -49,7 +49,15 @@ embedding_view = html.Div([
         dbc.Col(dreamer_dropdown, width=4),
         dbc.Col(dreamer_dropdown_comparison, width=4),
     ], justify='between'),
+
     html.Br(), html.Br(),
+
+    dbc.Row([
+        dbc.Col(id='main_dreamer_count', width=4),
+        dbc.Col(id='compare_dreamer_count', width=4)
+    ], justify='between'),
+
+    html.Br(),
 
 
     # Upper Figures

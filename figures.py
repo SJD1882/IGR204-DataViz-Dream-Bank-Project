@@ -64,6 +64,7 @@ def get_tfidf_figure(cleaned_corpus_list, colors, names):
         y = tfidf_score.values
         temp_data = go.Bar(x=x, y=y, marker_color=color, name=name)
         fig.append_trace(temp_data, row=i, col=1)
+        fig.update_xaxes(tickangle=45, row=i, col=1)
         fig.update_yaxes(title_text="TFIDF Score", row=i, col=1)
 
     fig.update_layout(margin=dict(t=30), paper_bgcolor='rgba(0,0,0,0)', clickmode='event+select',

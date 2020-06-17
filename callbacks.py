@@ -137,6 +137,36 @@ def get_app_callbacks(app, embedding_df):
 
 
     @app.callback(
+        [Output('main_dreamer_count', 'children'),
+         Output('compare_dreamer_count', 'children')],
+        [Input('dreamer-select', 'value'),
+         Input('dreamer-compare', 'value')]
+    )
+    def update_count(dreamer, compare):
+        """ AAA
+        """
+        embedding = embedding_df.copy()
+
+        if (dreamer == 'All'):
+            nb_count_dreamer = len(embedding)
+            text_dreamer = dcc.Markdown("**Dream Count**:  {}".format(nb_count_dreamer))
+            compare_dreamer = dcc.Markdown("")
+
+        elif (dreamer != 'All') and (compare == 'None'):
+            nb_count_dreamer = embedding[embedding['dreamer'] == dreamer].shape[0]
+            text_dreamer = dcc.Markdown("**Dream Count**:  {}".format(nb_count_dreamer))
+            compare_dreamer = dcc.Markdown("")
+
+        elif (dreamer != 'All') and (compare != 'None'):
+            nb_count_dreamer = embedding[embedding['dreamer'] == dreamer].shape[0]
+            nb_count_compare = embedding[embedding['dreamer'] == compare].shape[0]
+            text_dreamer = dcc.Markdown("**Dream Count**:  {}".format(nb_count_dreamer))
+            compare_dreamer = dcc.Markdown("**Dream Count**:  {}".format(nb_count_compare))
+
+        return text_dreamer, compare_dreamer
+
+
+    @app.callback(
         Output('displayed_tab', 'children'),
         [Input('container_tabs', 'active_tab')]
     )
