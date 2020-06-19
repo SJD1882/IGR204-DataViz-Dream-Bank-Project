@@ -175,7 +175,7 @@ def get_app_callbacks(app, embedding_df):
         """
         if tab_name == 'tab-0':
             return embedding_view
-        elif tab_name == 'tab-1':
-            return 'TBC'
+        # elif tab_name == 'tab-1':
+        #    return 'TBC'
         return 'Loading...'
 
