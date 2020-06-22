@@ -25,7 +25,7 @@ layout = dbc.Container([
     dbc.CardHeader([
         dbc.Tabs([
             dbc.Tab(label='Dream View', id='tab-0'),
-            # dbc.Tab(label='Time Series View', id='tab-1')
+            dbc.Tab(label='Comparing Dreams', id='tab-1')
         ], id='container_tabs', active_tab='tab-0')
     ]),
 

@@ -174,8 +174,58 @@ def get_app_callbacks(app, embedding_df):
         """ AAA
         """
         if tab_name == 'tab-0':
-            return embedding_view
-        # elif tab_name == 'tab-1':
-        #    return 'TBC'
+            return main_view
+        elif tab_name == 'tab-1':
+            return compare_view
         return 'Loading...'
+
+
+    @app.callback(
+        Output('all-dreams-container', 'figure'),
+        [Input('main-emotion', 'value')]
+    )
+    def get_figure(main_emotion):
+        """ AAA
+        """
+        embedding = embedding_df.copy()
+
+        if main_emotion is None:
+            embeddings = [embedding]
+            fig = get_embedding_scatterplots(embeddings, [2], [1.0], ['darkblue'], names=['All'])
+        else:
+            embeddings = [embedding]
+            fig = get_embedding_scatterplots(embeddings, [2], [1.0], ['darkblue'], names=['All'])
+
+        return fig
+
+
+    @app.callback(
+        [Output('tfidf-score-container', 'figure'),
+         Output('radar-container', 'figure')],
+        [Input('all-dreams-container', 'selectedData')]
+    )
+    def get_figure(dream_list):
+        """ AAA
+        """
+        emotions = ['anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 'surprise', 'trust']
+
+        if dream_list is not None:
+            dream_list = [el['customdata'] for el in dream_list['points']]
+            selected_data = embedding_df.iloc[dream_list]
+            clean_corpus = selected_data['text_cleaned'].copy()
+            mean_scores = [selected_data[emotions].mean()]
+
+            # Get Figures
+            fig_tfidf_scores = get_tfidf_figure([clean_corpus], colors=['darkblue'], names=['All'])
+            fig_radar_plot = get_emoticon_radar_chart(mean_scores, ['darkblue'], ['All'])
+
+        else:
+            clean_corpus = embedding_df['text_cleaned'].copy()
+            mean_scores = [embedding_df[emotions].mean()]
+
+            # Get Figures
+            fig_tfidf_scores = get_tfidf_figure([clean_corpus], colors=['darkblue'], names=['All'])
+            fig_radar_plot = get_emoticon_radar_chart(mean_scores, ['darkblue'], ['All'])
+
+        return fig_tfidf_scores, fig_radar_plot
 

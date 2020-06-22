@@ -18,24 +18,54 @@ embedding_df['text'] = embedding_df['text'].apply(lambda x: x[:40] + '-<br>' + x
                                                             x[80:120] + '...')
 embedding_df['text'] = '<b>' + embedding_df['dreamer'] + '</b><br>' + embedding_df['text']
 
-# Prepare Dropdown Levels (Main)
+# Prepare Dropdown Levels (Compare)
 dreamers_list = embedding_df[['dreamer', 'description']].drop_duplicates()
 dreamers_unique = ['All'] + dreamers_list['dreamer'].tolist()
 dreamers_desc_unique = ['All Dreamers'] + dreamers_list['description'].tolist()
 dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
 dreamer_dropdown = dcc.Dropdown(id='dreamer-select', options=dreamers_items, value='All')
 
-# Prepare Dropdown Levels (AAA)
+# Prepare Dropdown Levels (Compare)
 dreamers_unique = ['None'] + dreamers_list['dreamer'].tolist()
 dreamers_desc_unique = ['None'] + dreamers_list['description'].tolist()
 dreamers_items = [{'label': desc, 'value': dreamer} for dreamer, desc in zip(dreamers_unique, dreamers_desc_unique)]
 dreamer_dropdown_comparison = dcc.Dropdown(id='dreamer-compare', options=dreamers_items, value='None')
 
+# Prepare Dropdown Levels (Main)
+emotions_list = ['None', 'anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 'surprise', 'trust']
+dreamers_items = [{'label': el, 'value': el} for el in emotions_list]
+dreamer_dropdown_emotions = dcc.Dropdown(id='main-emotion', options=dreamers_items, value='None')
+
 
 #####################################################################################
 # Layouts
 #####################################################################################
-embedding_view = html.Div([
+main_view = html.Div([
+    dbc.Row([
+        dbc.Col(children=html.H3('All Dreams'), width=12),
+    ], justify='center'),
+
+    dbc.Row([
+        dbc.Col(children=dreamer_dropdown_emotions, width=4)
+    ], justify='center'),
+
+    dbc.Row([
+        dbc.Col(children=dcc.Graph(id='all-dreams-container'), width=8)
+    ], justify='center'),
+
+    dbc.Row([
+        dbc.Col(children=html.H3('Word Frequency'), width=6),
+        dbc.Col(children=html.H3('Mean Emotional Lexicon'), width=6)
+    ]),
+
+    dbc.Row([
+        dbc.Col(children=dcc.Graph(id='tfidf-score-container'), width=6),
+        dbc.Col(children=dcc.Graph(id='radar-container'), width=6)
+    ])
+])
+
+
+compare_view = html.Div([
     # Dreamer Choice
     dbc.Row([
         dbc.Col(children=html.H3('Dreamer'), width=6),
