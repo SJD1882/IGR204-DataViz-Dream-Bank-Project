@@ -189,14 +189,15 @@ def get_app_callbacks(app, embedding_df):
         """
         embedding = embedding_df.copy()
 
-        if main_emotion is None:
+        if main_emotion == 'None':
             embeddings = [embedding]
             fig = get_embedding_scatterplots(embeddings, [2], [1.0], ['darkblue'], names=['All'])
         else:
-            embeddings = [embedding]
-            fig = get_embedding_scatterplots(embeddings, [2], [1.0], ['darkblue'], names=['All'])
+            emotion = embedding[main_emotion].copy()
+            fig = get_scatterplot_with_emotions(embedding, emotion, main_emotion)
 
         return fig
+
 
 
     @app.callback(

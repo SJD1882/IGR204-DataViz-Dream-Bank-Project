@@ -90,3 +90,28 @@ def get_emoticon_radar_chart(scores_list, colors, names):
     return fig
 
 
+def get_scatterplot_with_emotions(embedding, emotion, emotion_name):
+    """ AAA
+    """
+    fig = go.Figure()
+
+    colorbar_dict = dict(thickness=20, tickmode='array', titleside='right',
+                         title=dict(text=emotion_name, font=dict(size=13)),
+                         outlinecolor='black', outlinewidth=1)
+    # hover_text = [''.format(score) for score in emotion]
+    marker_dict = dict(color=emotion, size=5, opacity=0.75, colorscale='Reds', colorbar=colorbar_dict)
+
+    fig.add_trace(
+        go.Scattergl(x=embedding['Z1'], y=embedding['Z2'], mode='markers',
+                     marker=marker_dict, hovertext=embedding['text'], customdata=embedding.index.tolist(),
+                     hoverinfo='text')
+    )
+
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)', xaxis=dict(showticklabels=False, ticks=''),
+        yaxis=dict(showticklabels=False, ticks=''), margin=dict(t=30)
+    )
+
+    return fig
+
+
