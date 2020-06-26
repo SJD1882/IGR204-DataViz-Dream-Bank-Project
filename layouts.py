@@ -49,9 +49,21 @@ main_view = html.Div([
         dbc.Col(children=dreamer_dropdown_emotions, width=4)
     ], justify='center'),
 
-    dbc.Row([
-        dbc.Col(children=dcc.Graph(id='all-dreams-container'), width=8)
-    ], justify='center'),
+    dbc.Row([dcc.Markdown('')]),
+
+    html.Br(), html.Br(),
+
+    dbc.Card([
+
+        dbc.Row(children=[
+            dbc.Col(children=dcc.Graph(id='all-dreams-container'), width=6),
+            dbc.Col(children=[
+                dcc.Markdown(id='all-dreams-text-container-1', style={"white-space": "pre"}),
+                dcc.Markdown(id='all-dreams-text-container-2', style={"overflow-y": "scroll", 'max-height': '300px'})
+            ], width=6)
+        ])], body=True, style={"border": "1px grey solid"}, color="dark", inverse=True),
+
+    html.Br(), html.Br(),
 
     dbc.Row([
         dbc.Col(children=html.H3('Word Frequency'), width=6),
@@ -121,3 +133,6 @@ compare_view = html.Div([
     ])
 
 ])
+
+
+

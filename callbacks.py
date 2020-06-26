@@ -230,3 +230,22 @@ def get_app_callbacks(app, embedding_df):
 
         return fig_tfidf_scores, fig_radar_plot
 
+
+    @app.callback(
+        [Output('all-dreams-text-container-1', 'children'),
+         Output('all-dreams-text-container-2', 'children')],
+        [Input('all-dreams-container', 'clickData')]
+    )
+    def get_dream_view(clicked_dream):
+        if clicked_dream is not None:
+            dream_idx = clicked_dream['points'][0]['customdata']
+        else:
+            dream_idx = 0
+
+        dream = embedding_df['content'].iloc[dream_idx]
+        date = embedding_df['date'].iloc[dream_idx]
+        author = embedding_df['description'].iloc[dream_idx]
+        title = 'Dreamer: **{}**\nDate: {}\nTranscript:'.format(author, date)
+        text = '{}'.format(dream)
+        return title, text
+

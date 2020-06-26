@@ -96,10 +96,12 @@ def get_scatterplot_with_emotions(embedding, emotion, emotion_name):
     fig = go.Figure()
 
     colorbar_dict = dict(thickness=20, tickmode='array', titleside='right',
-                         title=dict(text=emotion_name, font=dict(size=13)),
-                         outlinecolor='black', outlinewidth=1)
+                         title=dict(text=emotion_name + ' (Nb. of words related to)',
+                                    font=dict(size=13, color='white')),
+                         outlinecolor='black', outlinewidth=1, tickfont=dict(color='white'))
     # hover_text = [''.format(score) for score in emotion]
-    marker_dict = dict(color=emotion, size=5, opacity=0.75, colorscale='Reds', colorbar=colorbar_dict)
+    marker_dict = dict(color=emotion,
+                       size=5, opacity=0.75, colorscale='Reds', colorbar=colorbar_dict)
 
     fig.add_trace(
         go.Scattergl(x=embedding['Z1'], y=embedding['Z2'], mode='markers',
@@ -109,9 +111,10 @@ def get_scatterplot_with_emotions(embedding, emotion, emotion_name):
 
     fig.update_layout(
         paper_bgcolor='rgba(0,0,0,0)', xaxis=dict(showticklabels=False, ticks=''),
-        yaxis=dict(showticklabels=False, ticks=''), margin=dict(t=30)
+        yaxis=dict(showticklabels=False, ticks=''), margin=dict(t=30), legend=dict(font=dict(color="white"))
     )
 
     return fig
+
 
 
